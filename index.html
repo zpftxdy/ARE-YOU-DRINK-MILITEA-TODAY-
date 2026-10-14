@@ -67,7 +67,7 @@
     .hero-number.celebrate { animation:number-pop 260ms var(--ease-out); }
     .hero-number span { font-size: 15px; letter-spacing: 0; font-weight: 500; margin-left: 5px; color: #E0FFF2; }
     .hero-note { margin-top: 8px; color: #E0FFF2; font-size: 12px; }
-    .ring { width:84px; height:84px; aspect-ratio:1; flex:0 0 84px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--coral) 0 71%, rgba(255,255,255,.14) 71% 100%); position:relative; }
+    .ring { width:84px; height:84px; aspect-ratio:1; flex:0 0 84px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--coral) 0 0%, rgba(255,255,255,.14) 0% 100%); position:relative; }
     .ring:before { content: ''; position: absolute; inset: 8px; border-radius: 50%; background: var(--ink); }
     .ring strong, .ring small { position: relative; z-index: 1; display: block; text-align: center; }
     .ring strong { font-size: 19px; }
@@ -225,6 +225,8 @@
     .bar-col label { color: var(--muted); font-family: 'DM Mono'; font-size: 9px; }
     .record-row { display:flex; justify-content:space-between; padding: 13px 0; border-bottom:1px solid #D3F2E3; }
     .record-row:last-child { border-bottom:0; }
+    .record-empty { padding:18px 0; color:var(--muted); font-size:13px; line-height:1.7; text-align:center; }
+    [hidden] { display:none !important; }
     .record-row strong { font-size:12px; }
     .record-row span { color:var(--muted); font-size:10px; display:block; margin-top:3px; }
     .record-state { color: var(--mint-deep); font-size:11px; font-weight:700; }
@@ -334,17 +336,17 @@
     <div class="app-content">
       <section id="todayPanel" class="tab-panel active">
         <header class="topbar">
-          <div><div class="eyebrow"><span class="eyebrow-dot"></span><span id="webDateLabel">今天</span></div><h1>早上好，<span id="homeName">林林</span></h1></div>
+          <div><div class="eyebrow"><span class="eyebrow-dot"></span><span id="webDateLabel">今天</span></div><h1>早上好，<span id="homeName">戒糖中的我</span></h1></div>
           <div class="top-actions"><button class="icon-btn" aria-label="消息" id="notifyBtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><button class="icon-btn" aria-label="个人资料" id="profileQuick"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.3 3-5 7-5s6.2 1.7 7 5"/></svg></button></div>
         </header>
         <article class="hero-card">
-          <div class="hero-row"><div><div class="hero-kicker">我的连续戒糖</div><div class="hero-number" id="streakNumber">12<span>天</span></div><p class="hero-note" id="heroEncouragement">每一次少糖的选择，都在照顾未来的自己。</p></div><div class="ring"><div><strong>71%</strong><small>本周完成</small></div></div></div>
-          <div class="hero-footer"><div class="mini-avatars"><div class="avatar me" id="miniMe">林</div><div class="avatar lan">澜</div><div class="avatar jie">洁</div></div><p>你和 <strong>2 位好友</strong> 正在一起坚持</p></div>
+          <div class="hero-row"><div><div class="hero-kicker">我的连续戒糖</div><div class="hero-number" id="streakNumber">0<span>天</span></div><p class="hero-note" id="heroEncouragement">每一次少糖的选择，都在照顾未来的自己。</p></div><div class="ring" id="weekRing"><div><strong id="weekProgress">0%</strong><small>本周完成</small></div></div></div>
+          <div class="hero-footer"><div class="mini-avatars"><div class="avatar me" id="miniMe">我</div></div><p>从今天开始，记录自己的每一次坚持</p></div>
         </article>
         <article class="nutrition-card">
-          <div class="nutrition-head"><div><div class="nutrition-kicker">累计减少摄入</div><div class="nutrition-title">身体少一点负担</div></div><div class="nutrition-count"><span id="totalCount">42</span><small>次坚持</small></div></div>
-          <div class="nutrition-totals"><div class="nutrition-total"><div class="nutrition-number"><span id="totalSugar">2,274</span><small>g</small></div><span>糖分</span></div><div class="nutrition-divider"></div><div class="nutrition-total"><div class="nutrition-number"><span id="totalCalories">11,070</span><small>kcal</small></div><span>热量</span></div></div>
-          <div class="drink-breakdown"><div class="drink-row"><div><div class="drink-name">饮料</div><div class="drink-note">少喝 <span id="colaCount">18</span> 瓶 · 每瓶约 <span id="drinkSugarRef">53</span>g 糖 / <span id="drinkCaloriesRef">215</span>kcal</div></div><div class="drink-result"><span id="colaSugar">954</span>g<small><span id="colaCalories">3,870</span>kcal</small></div></div><div class="drink-row"><div><div class="drink-name">奶茶</div><div class="drink-note">少喝 <span id="milkTeaCount">24</span> 杯 · 每杯约 <span id="milkTeaSugarRef">55</span>g 糖 / <span id="milkTeaCaloriesRef">300</span>kcal</div></div><div class="drink-result"><span id="milkTeaSugar">1,320</span>g<small><span id="milkTeaCalories">7,200</span>kcal</small></div></div></div>
+          <div class="nutrition-head"><div><div class="nutrition-kicker">累计减少摄入</div><div class="nutrition-title">身体少一点负担</div></div><div class="nutrition-count"><span id="totalCount">0</span><small>次坚持</small></div></div>
+          <div class="nutrition-totals"><div class="nutrition-total"><div class="nutrition-number"><span id="totalSugar">0</span><small>g</small></div><span>糖分</span></div><div class="nutrition-divider"></div><div class="nutrition-total"><div class="nutrition-number"><span id="totalCalories">0</span><small>kcal</small></div><span>热量</span></div></div>
+          <div class="drink-breakdown"><div class="drink-row"><div><div class="drink-name">饮料</div><div class="drink-note">少喝 <span id="colaCount">0</span> 瓶 · 每瓶约 <span id="drinkSugarRef">53</span>g 糖 / <span id="drinkCaloriesRef">215</span>kcal</div></div><div class="drink-result"><span id="colaSugar">0</span>g<small><span id="colaCalories">0</span>kcal</small></div></div><div class="drink-row"><div><div class="drink-name">奶茶</div><div class="drink-note">少喝 <span id="milkTeaCount">0</span> 杯 · 每杯约 <span id="milkTeaSugarRef">55</span>g 糖 / <span id="milkTeaCaloriesRef">300</span>kcal</div></div><div class="drink-result"><span id="milkTeaSugar">0</span>g<small><span id="milkTeaCalories">0</span>kcal</small></div></div></div>
           <div class="estimate-note">数据为每份估算值，品牌、容量和配方不同会有差异。</div><p class="encouragement">少一点甜，多一点轻盈。你的每次坚持，都值得被看见。</p>
         </article>
         <div class="section-head"><h2>今天的状态</h2><button id="editGoal">调整目标</button></div>
@@ -354,13 +356,19 @@
         <article class="health-card" id="healthCard"><div class="health-icon">✦</div><div class="health-copy"><div class="health-top"><strong id="scienceTitle">含糖饮料不是日常补水</strong><span class="science-tag">每日更新</span></div><p class="science-fact" id="scienceFact">含糖饮料容易带来额外糖分和热量。口渴时优先选择白水或无糖茶，通常是更轻松、可持续的选择。</p><small class="science-source" id="scienceSource">用于日常健康提醒，不替代医疗建议。</small></div></article>
       </section>
 
-      <section id="pkPanel" class="tab-panel"><div class="pk-view-title">好友排行</div><div class="pk-view-sub">按连续戒糖天数展示已加入小程序的微信好友。</div><div class="metric-grid"><div class="metric"><span>我的排名</span><strong>02<em>名</em></strong></div><div class="metric"><span>已加入好友</span><strong>06<em>人</em></strong></div></div><div class="section-head"><h2>全部好友</h2><button id="inviteBtn">邀请好友</button></div><article class="leaderboard"><div class="leader-row"><div class="rank">01</div><div class="leader-user"><div class="avatar lan">澜</div><div><strong>小澜</strong><span>连续 14 天 · 今日已完成</span></div></div><div class="leader-score"><strong>14</strong><span>天</span></div></div><div class="leader-row you"><div class="rank">02</div><div class="leader-user"><div class="avatar me" id="rankMeAvatar">林</div><div><strong><i id="rankMeName">林林</i>（你）</strong><span>连续 12 天 · 今日未打卡</span></div></div><div class="leader-score"><strong>12</strong><span>天</span></div></div><div class="leader-row"><div class="rank">03</div><div class="leader-user"><div class="avatar jie">洁</div><div><strong>阿洁</strong><span>连续 8 天 · 今日已完成</span></div></div><div class="leader-score"><strong>08</strong><span>天</span></div></div><div class="leader-row"><div class="rank">04</div><div class="leader-user"><div class="avatar lan">周</div><div><strong>小周</strong><span>连续 6 天 · 今日未打卡</span></div></div><div class="leader-score"><strong>06</strong><span>天</span></div></div><div class="leader-row"><div class="rank">05</div><div class="leader-user"><div class="avatar jie">乔</div><div><strong>乔乔</strong><span>连续 4 天 · 今日已完成</span></div></div><div class="leader-score"><strong>04</strong><span>天</span></div></div><div class="leader-row"><div class="rank">06</div><div class="leader-user"><div class="avatar me">许</div><div><strong>小许</strong><span>连续 2 天 · 今日未打卡</span></div></div><div class="leader-score"><strong>02</strong><span>天</span></div></div></article><p class="estimate-note" style="margin-top:10px">示例排行；正式版需接入云开发，仅展示已授权并加入小程序的好友。</p></section>
+      <section id="pkPanel" class="tab-panel">
+        <div class="pk-view-title">好友排行</div>
+        <div class="pk-view-sub">好友功能尚未开通，接入后仅展示经双方同意加入的好友。</div>
+        <div class="metric-grid"><div class="metric"><span>我的排名</span><strong>—</strong></div><div class="metric"><span>已加入好友</span><strong>0<em>人</em></strong></div></div>
+        <div class="section-head"><h2>全部好友</h2><button id="inviteBtn" disabled>邀请好友（待开通）</button></div>
+        <article class="leaderboard"><p class="record-empty">还没有好友。好友加入后，才会出现真实排行。</p></article>
+      </section>
 
-      <section id="recordPanel" class="tab-panel"><div class="pk-view-title">我的记录</div><div class="pk-view-sub">每一次选择，都会留下变好的证据。</div><div class="metric-grid"><div class="metric"><span>累计戒糖</span><strong>86<em>天</em></strong></div><div class="metric"><span>减少糖分</span><strong><span id="recordSugar">2,274</span><em>g</em></strong></div></div>
-        <article class="chart-card"><div class="chart-head"><div><strong>打卡热力图</strong><span class="chart-subtitle">近 18 周的坚持</span></div><div class="heatmap-count"><strong id="heatmapCount">42</strong><span>天完成</span></div></div><div class="heatmap-plot"><div class="heatmap-scroll" id="heatmapScroll"><div class="heatmap-canvas"><div class="heatmap-months" id="heatmapMonths" aria-hidden="true"></div><div class="heatmap-body"><div class="weekday-labels"><span>一</span><span></span><span>三</span><span></span><span>五</span><span></span><span>日</span></div><div class="contribution-grid" id="contributionGrid" role="img" aria-label="过去18周打卡热力图"></div></div></div></div></div><div class="heatmap-footer"><span>每格一天 · 描边是今天</span><div class="heatmap-legend"><span class="legend-item"><i class="legend-cell cola"></i>喝了饮料</span><span class="legend-item"><i class="legend-cell milk-tea"></i>喝了奶茶</span><span class="legend-item"><i class="legend-cell both"></i>少喝</span><span class="legend-item"><i class="legend-cell none"></i>没喝</span><span class="legend-item"><i class="legend-cell missed"></i>漏打卡</span></div></div></article>
-        <div class="section-head"><h2>最近 3 次记录</h2><button>查看全部</button></div><article class="leaderboard"><div class="record-row"><div><strong>少喝一杯奶茶</strong><span>今天 · 午后</span></div><div class="record-state">已坚持</div></div><div class="record-row"><div><strong>少喝一瓶饮料</strong><span>昨天 · 午餐</span></div><div class="record-state">已坚持</div></div><div class="record-row"><div><strong>少喝一杯奶茶</strong><span>10月10日 · 下午</span></div><div class="record-state">已坚持</div></div></article></section>
+      <section id="recordPanel" class="tab-panel"><div class="pk-view-title">我的记录</div><div class="pk-view-sub">每一次选择，都会留下变好的证据。</div><div class="metric-grid"><div class="metric"><span>累计打卡</span><strong><span id="recordDays">0</span><em>天</em></strong></div><div class="metric"><span>减少糖分</span><strong><span id="recordSugar">0</span><em>g</em></strong></div></div>
+        <article class="chart-card"><div class="chart-head"><div><strong>打卡热力图</strong><span class="chart-subtitle">近 18 周的坚持</span></div><div class="heatmap-count"><strong id="heatmapCount">0</strong><span>天完成</span></div></div><div class="heatmap-plot"><div class="heatmap-scroll" id="heatmapScroll"><div class="heatmap-canvas"><div class="heatmap-months" id="heatmapMonths" aria-hidden="true"></div><div class="heatmap-body"><div class="weekday-labels"><span>一</span><span></span><span>三</span><span></span><span>五</span><span></span><span>日</span></div><div class="contribution-grid" id="contributionGrid" role="img" aria-label="过去18周打卡热力图"></div></div></div></div></div><div class="heatmap-footer"><span>每格一天 · 描边是今天</span><div class="heatmap-legend"><span class="legend-item"><i class="legend-cell cola"></i>喝了饮料</span><span class="legend-item"><i class="legend-cell milk-tea"></i>喝了奶茶</span><span class="legend-item"><i class="legend-cell both"></i>少喝</span><span class="legend-item"><i class="legend-cell none"></i>没喝</span><span class="legend-item"><i class="legend-cell missed"></i>漏打卡</span></div></div></article>
+        <div class="section-head"><h2 id="recordListTitle">最近 3 次记录</h2><button id="toggleRecords" hidden>查看全部</button></div><article class="leaderboard" id="recordList"><p class="record-empty">还没有记录，去首页完成第一次打卡吧。</p></article></section>
 
-      <section id="profilePanel" class="tab-panel"><div class="pk-view-title">我的</div><button class="profile-head editable" data-setting="name"><div class="profile-avatar" id="profileAvatar">林</div><div><strong id="profileName">林林</strong><span>加入今天你喝奶茶了吗 · 第 86 天 · 点击编辑昵称</span></div></button><button class="setting-row editable" data-setting="goal"><div>我的戒糖目标</div><div class="setting-trailing"><span id="goalValue">每天少喝一份含糖饮料</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="nutrition"><div>营养估算标准</div><div class="setting-trailing"><span id="nutritionValue">饮料 / 奶茶</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="noDrink"><div>“没有喝”的记录</div><div class="setting-trailing"><span id="noDrinkValue">计入连续天数</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="reminder"><div>提醒时间</div><div class="setting-trailing"><span id="reminderValue">每天 20:30</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="visibility"><div>好友可见范围</div><div class="setting-trailing"><span id="visibilityValue">仅好友</span><b class="setting-chevron">›</b></div></button><div class="setting-row"><div>关于今天你喝奶茶了吗</div><div class="setting-trailing"><span>v1.2.0</span></div></div></section>
+      <section id="profilePanel" class="tab-panel"><div class="pk-view-title">我的</div><button class="profile-head editable" data-setting="name"><div class="profile-avatar" id="profileAvatar">我</div><div><strong id="profileName">戒糖中的我</strong><span id="profileDays">已记录 0 天的坚持 · 点击编辑昵称</span></div></button><button class="setting-row editable" data-setting="goal"><div>我的戒糖目标</div><div class="setting-trailing"><span id="goalValue">每天少喝一份含糖饮料</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="nutrition"><div>营养估算标准</div><div class="setting-trailing"><span id="nutritionValue">饮料 / 奶茶</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="noDrink"><div>“没有喝”的记录</div><div class="setting-trailing"><span id="noDrinkValue">计入连续天数</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="reminder"><div>提醒时间</div><div class="setting-trailing"><span id="reminderValue">每天 20:30</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="visibility"><div>好友可见范围</div><div class="setting-trailing"><span id="visibilityValue">仅好友</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" id="clearRecords" type="button"><div>清空我的记录</div><div class="setting-trailing"><span>删除当前浏览器的打卡记录</span><b class="setting-chevron">›</b></div></button><div class="setting-row"><div>关于今天你喝奶茶了吗</div><div class="setting-trailing"><span>v1.2.0</span></div></div></section>
     </div>
     <nav class="bottom-nav"><button class="nav-item active" data-tab="today"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3.5 10.5 12 3l8.5 7.5V20a1 1 0 0 1-1 1h-5v-6h-5v6h-5a1 1 0 0 1-1-1z"/></svg><span>今日</span></button><button class="nav-item" data-tab="pk"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M8 8h8M8 12h8M8 16h5M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/></svg><span>好友排行</span></button><button class="nav-item" data-tab="record"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 19V5M4 19h17M8 16v-3M12 16V8M16 16v-6M20 16v-9"/></svg><span>记录</span></button><button class="nav-item" data-tab="profile"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.3 3-5 7-5s6.2 1.7 7 5"/></svg><span>我的</span></button></nav>
   </main>
@@ -381,6 +389,85 @@
   </div>
   <div class="toast" id="toast"></div>
   <script>
+// Local calendar dates keep check-ins consistent with the device's day.
+const NUTRITION = {
+  cola: { label: '饮料', unit: '瓶', sugar: 53, calories: 215 },
+  milkTea: { label: '奶茶', unit: '杯', sugar: 55, calories: 300 },
+  both: { label: '饮料和奶茶', unit: '份', sugar: 108, calories: 515 },
+  none: { label: '没有喝', unit: '天', sugar: 0, calories: 0 }
+};
+
+function dateKey(date) {
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+}
+
+function normalizeRecords(records, now) {
+  const today = dateKey(now || new Date());
+  const byDate = new Map();
+  (Array.isArray(records) ? records : []).forEach(record => {
+    const date = typeof record === 'string' ? record : record && record.date;
+    const type = typeof record === 'string' ? 'milkTea' : record && record.type;
+    if (/^\d{4}-\d{2}-\d{2}$/.test(date) && date <= today && NUTRITION[type]) {
+      byDate.set(date, { date, type, countsForStreak: !(record && typeof record === 'object' && record.countsForStreak === false) });
+    }
+  });
+  return Array.from(byDate.values()).sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function summarize(records, now, customNutrition) {
+  const entries = normalizeRecords(records, now);
+  const nutrition = {
+    cola: Object.assign({}, NUTRITION.cola, customNutrition && customNutrition.cola),
+    milkTea: Object.assign({}, NUTRITION.milkTea, customNutrition && customNutrition.milkTea),
+    none: NUTRITION.none
+  };
+  nutrition.both = {
+    label: NUTRITION.both.label,
+    unit: NUTRITION.both.unit,
+    sugar: nutrition.cola.sugar + nutrition.milkTea.sugar,
+    calories: nutrition.cola.calories + nutrition.milkTea.calories
+  };
+  const dates = new Set(entries.filter(item => item.countsForStreak).map(item => item.date));
+  const today = dateKey(now);
+  const cursor = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12);
+  if (!dates.has(today)) cursor.setDate(cursor.getDate() - 1);
+  let streak = 0;
+  while (dates.has(dateKey(cursor))) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+
+  const colaCount = entries.filter(item => item.type === 'cola' || item.type === 'both').length;
+  const milkTeaCount = entries.filter(item => item.type === 'milkTea' || item.type === 'both').length;
+  const colaSugar = colaCount * nutrition.cola.sugar;
+  const colaCalories = colaCount * nutrition.cola.calories;
+  const milkTeaSugar = milkTeaCount * nutrition.milkTea.sugar;
+  const milkTeaCalories = milkTeaCount * nutrition.milkTea.calories;
+  const todayRecord = entries.find(item => item.date === today);
+
+  return {
+    todayDone: Boolean(todayRecord),
+    todayDrinkLabel: todayRecord ? nutrition[todayRecord.type].label : '',
+    streak,
+    cups: entries.length,
+    colaCount,
+    milkTeaCount,
+    colaSugar,
+    colaCalories,
+    milkTeaSugar,
+    milkTeaCalories,
+    sugarReduced: colaSugar + milkTeaSugar,
+    caloriesReduced: colaCalories + milkTeaCalories,
+    recentRecords: entries.slice().reverse().slice(0, 7).map(item => ({
+      date: item.date,
+      type: item.type,
+      drinkLabel: nutrition[item.type].label,
+      unit: nutrition[item.type].unit
+    }))
+  };
+}
+
+
     const panels = { today: 'todayPanel', pk: 'pkPanel', record: 'recordPanel', profile: 'profilePanel' };
     const toast = (message) => { const el = document.getElementById('toast'); el.textContent = message; el.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => el.classList.remove('show'), 2200); };
     document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => {
@@ -393,7 +480,7 @@
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }));
-    const defaultSettings = { name: '林林', goal: '每天少喝一份含糖饮料', drinkSugar: 53, drinkCalories: 215, milkTeaSugar: 55, milkTeaCalories: 300, noDrinkCounts: true, reminder: '20:30', visibility: '仅好友' };
+    const defaultSettings = { name: '戒糖中的我', goal: '每天少喝一份含糖饮料', drinkSugar: 53, drinkCalories: 215, milkTeaSugar: 55, milkTeaCalories: 300, noDrinkCounts: true, reminder: '20:30', visibility: '仅好友' };
     const scienceFacts = [
       { title: '含糖饮料不是日常补水', fact: '含糖饮料容易带来额外糖分和热量。口渴时优先选择白水或无糖茶，通常是更轻松、可持续的选择。' },
       { title: '看标签时留意“每 100ml”', fact: '营养成分表常按每 100ml 标注。一瓶饮料可能不止 100ml，估算整瓶摄入时记得乘上实际容量。' },
@@ -406,12 +493,19 @@
     ];
     const encouragements = ['每一次少糖的选择，都在照顾未来的自己。', '今天不必完美，只要比昨天更靠近目标一点。', '你的坚持正在变成一种更轻松的生活方式。', '少一点甜，也是在给身体多一点温柔。', '稳定的小改变，会慢慢带来很大的不同。', '认真记录的每一天，都算数。', '把目标放小一点，坚持就会容易一点。', '今天的清醒选择，值得给自己一个肯定。'];
     const localDayNumber = date => Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
-    const localDateKey = date => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const localDateKey = dateKey;
     const loadSettings = () => { try { return Object.assign({}, defaultSettings, JSON.parse(localStorage.getItem('sugarBattleSettings') || '{}')); } catch (_) { return Object.assign({}, defaultSettings); } };
     let userSettings = loadSettings();
     const nutrition = { cola: { label: '饮料', sugar: 53, calories: 215 }, milkTea: { label: '奶茶', sugar: 55, calories: 300 }, both: { label: '饮料和奶茶', sugar: 108, calories: 515 }, none: { label: '没有喝', sugar: 0, calories: 0 } };
-    const counts = { cola: 18, milkTea: 24 };
-    let totalCheckins = 42;
+    const WEB_RECORDS_KEY = 'sugarBattleWebRecordsV1';
+    const loadRecords = () => {
+      try { return normalizeRecords(JSON.parse(localStorage.getItem(WEB_RECORDS_KEY) || '[]'), new Date()); }
+      catch (_) { return []; }
+    };
+    let webRecords = loadRecords();
+    const counts = { cola: 0, milkTea: 0 };
+    let totalCheckins = 0;
+    let showAllRecords = false;
     let selectedDrink = 'milkTea';
     let checkedDrink = null;
     const formatNumber = value => value.toLocaleString('zh-CN');
@@ -429,7 +523,8 @@
       setText('scienceTitle', science.title); setText('scienceFact', science.fact);
       setText('scienceSource', '用于日常健康提醒，不替代医疗建议。');
       renderedDay = localDateKey(today);
-      if (dateChanged) renderContributionGrid(today);
+      document.querySelector('h1').firstChild.textContent = (today.getHours() < 12 ? '早上好' : today.getHours() < 18 ? '下午好' : '晚上好') + '，';
+      if (dateChanged) refreshRecords(today);
       const card = document.getElementById('healthCard');
       if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && card.animate) {
         card.animate([{ opacity:.55, transform:'translateY(4px) scale(.99)' }, { opacity:1, transform:'translateY(0) scale(1)' }], { duration:220, easing:'cubic-bezier(.23,1,.32,1)' });
@@ -457,15 +552,13 @@
       const fragment = document.createDocumentFragment();
       let completed = 0;
       const statusByType = { cola: 'cola', milkTea: 'milk-tea', both: 'both', none: 'none' };
+      const byDate = new Map(normalizeRecords(webRecords, today).map(record => [record.date, record]));
       for (let index = 0; index < weeks * 7; index += 1) {
         const date = new Date(start); date.setDate(start.getDate() + index);
-        const serial = localDayNumber(date);
-        const difference = localDayNumber(today) - serial;
-        const future = difference < 0;
-        const score = Math.abs((serial * 9301 + 49297) % 233280) % 100;
-        const simulatedDone = !future && score < (difference < 14 ? 64 : 43);
+        const future = localDateKey(date) > todayKey;
         const isToday = localDateKey(date) === todayKey;
-        const recordType = isToday && checkedDrink ? checkedDrink : simulatedDone ? ['cola', 'milkTea', 'both', 'none'][score % 4] : null;
+        const record = byDate.get(localDateKey(date));
+        const recordType = record ? record.type : null;
         const done = Boolean(recordType);
         const status = future ? 'future' : !recordType ? isToday ? 'pending' : 'missed' : statusByType[recordType] || 'missed';
         if (done) completed += 1;
@@ -515,6 +608,66 @@
       setText('bothOptionSugar', nutrition.both.sugar);
       setText('bothOptionCalories', nutrition.both.calories);
     };
+    const renderRecordList = (now = new Date()) => {
+      const items = normalizeRecords(webRecords, now).slice().reverse();
+      const list = document.getElementById('recordList');
+      const toggle = document.getElementById('toggleRecords');
+      toggle.hidden = items.length <= 3;
+      toggle.textContent = showAllRecords ? '收起' : '查看全部';
+      setText('recordListTitle', showAllRecords ? '全部记录' : '最近 3 次记录');
+      const fragment = document.createDocumentFragment();
+      if (!items.length) {
+        const empty = document.createElement('p');
+        empty.className = 'record-empty';
+        empty.textContent = '还没有记录，去首页完成第一次打卡吧。';
+        fragment.appendChild(empty);
+      }
+      const yesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12);
+      yesterday.setDate(yesterday.getDate() - 1);
+      (showAllRecords ? items : items.slice(0, 3)).forEach(record => {
+        const row = document.createElement('div'); row.className = 'record-row';
+        const copy = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = record.type === 'none' ? '没有喝含糖饮料' : record.type === 'both' ? '少喝饮料和奶茶' : '少喝一' + NUTRITION[record.type].unit + NUTRITION[record.type].label;
+        const date = document.createElement('span');
+        date.textContent = record.date === localDateKey(now) ? '今天' : record.date === localDateKey(yesterday) ? '昨天' : record.date;
+        copy.appendChild(title); copy.appendChild(date);
+        const state = document.createElement('div'); state.className = 'record-state'; state.textContent = '已记录';
+        row.appendChild(copy); row.appendChild(state); fragment.appendChild(row);
+      });
+      list.replaceChildren(fragment);
+    };
+    const refreshRecords = (now = new Date()) => {
+      const summary = summarize(webRecords, now, {
+        cola: { sugar: Number(userSettings.drinkSugar), calories: Number(userSettings.drinkCalories) },
+        milkTea: { sugar: Number(userSettings.milkTeaSugar), calories: Number(userSettings.milkTeaCalories) }
+      });
+      counts.cola = summary.colaCount; counts.milkTea = summary.milkTeaCount; totalCheckins = summary.cups;
+      const todayRecord = normalizeRecords(webRecords, now).find(record => record.date === localDateKey(now));
+      checkedDrink = todayRecord ? todayRecord.type : null;
+      updateNutrition();
+      setText('recordDays', summary.cups);
+      setText('profileDays', '已记录 ' + summary.cups + ' 天的坚持 · 点击编辑昵称');
+      const streakNumber = document.getElementById('streakNumber');
+      const unit = document.createElement('span'); unit.textContent = '天';
+      streakNumber.replaceChildren(String(summary.streak), unit);
+      const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12);
+      monday.setDate(monday.getDate() - (monday.getDay() + 6) % 7);
+      const weekCompleted = normalizeRecords(webRecords, now).filter(record => record.date >= localDateKey(monday)).length;
+      const percent = Math.round(weekCompleted / 7 * 100);
+      setText('weekProgress', percent + '%');
+      document.getElementById('weekRing').style.background = 'conic-gradient(var(--coral) 0 ' + percent + '%, rgba(255,255,255,.14) ' + percent + '% 100%)';
+      checkBtn.disabled = Boolean(checkedDrink);
+      checkBtn.classList.toggle('done', Boolean(checkedDrink));
+      checkBtn.textContent = checkedDrink ? '已完成' : '立即打卡';
+      document.querySelectorAll('.drink-option').forEach(item => { item.disabled = Boolean(checkedDrink); });
+      document.getElementById('drinkPicker').style.display = checkedDrink ? 'none' : '';
+      setText('checkTitle', !checkedDrink ? '今天还没打卡' : checkedDrink === 'none' ? '今天没有喝含糖饮料' : checkedDrink === 'both' ? '今天已少喝饮料和奶茶' : '今天已少喝一份' + nutrition[checkedDrink].label);
+      setText('checkSub', !checkedDrink ? '可选饮料、奶茶、少喝或没有喝' : checkedDrink === 'none' ? '完成清爽的一天，继续保持' : '少一点糖，也少一点热量负担');
+      checkBtn.closest('.checkin-card').classList.toggle('success', Boolean(checkedDrink));
+      renderContributionGrid(now);
+      renderRecordList(now);
+    };
     const renderSettings = () => {
       const initial = userSettings.name.trim().charAt(0) || '我';
       ['profileAvatar', 'miniMe', 'rankMeAvatar'].forEach(id => setText(id, initial));
@@ -524,13 +677,13 @@
       setText('noDrinkValue', userSettings.noDrinkCounts ? '计入连续天数' : '仅保存记录');
       setText('reminderValue', `每天 ${userSettings.reminder}`);
       setText('visibilityValue', userSettings.visibility);
-      updateNutrition();
+      refreshRecords();
     };
     const settingsModal = document.getElementById('settingsModal');
     const settingsForm = document.getElementById('settingsForm');
     let activeSetting = '';
     const settingMeta = {
-      name: ['编辑昵称', '昵称会显示在好友排行中。'], goal: ['编辑戒糖目标', '写下适合自己的日常目标。'],
+      name: ['编辑昵称', '修改昵称后会显示在个人主页。'], goal: ['编辑戒糖目标', '写下适合自己的日常目标。'],
       nutrition: ['营养估算标准', '按你常喝的饮料容量填写每份估算值。'], noDrink: ['“没有喝”的记录', '选择是否把这类记录计入连续天数。'],
       reminder: ['提醒时间', '设置每天希望收到提醒的时间。'], visibility: ['好友可见范围', '控制哪些用户可以看到你的记录。']
     };
@@ -579,30 +732,40 @@
     }));
     const checkBtn = document.getElementById('checkBtn');
     checkBtn.addEventListener('click', () => {
-      if (checkedDrink) return;
-      checkedDrink = selectedDrink;
-      if (checkedDrink === 'both') { counts.cola += 1; counts.milkTea += 1; }
-      else if (checkedDrink !== 'none') counts[checkedDrink] += 1;
-      totalCheckins += 1;
-      const noDrink = checkedDrink === 'none';
-      checkBtn.classList.add('done');
-      checkBtn.disabled = true;
-      checkBtn.textContent = '已完成';
-      document.querySelectorAll('.drink-option').forEach(item => { item.disabled = true; });
-      document.getElementById('drinkPicker').style.display = 'none';
-      document.getElementById('checkTitle').textContent = noDrink ? '今天没有喝含糖饮料' : checkedDrink === 'both' ? '今天已少喝饮料和奶茶' : `今天已少喝一份${nutrition[checkedDrink].label}`;
-      document.getElementById('checkSub').textContent = noDrink ? '完成清爽的一天，继续保持' : '少一点糖，也少一点热量负担';
-      if (!noDrink || userSettings.noDrinkCounts) document.getElementById('streakNumber').innerHTML = '13<span>天</span>';
+      const now = new Date();
+      refreshRecords(now);
+      if (checkedDrink) { toast('今天已经打卡啦'); return; }
+      const type = selectedDrink;
+      const nextRecords = normalizeRecords(webRecords.concat({
+        date: localDateKey(now), type,
+        countsForStreak: type !== 'none' || userSettings.noDrinkCounts
+      }), now);
+      try { localStorage.setItem(WEB_RECORDS_KEY, JSON.stringify(nextRecords)); }
+      catch (_) { toast('保存失败，请允许浏览器保存数据后重试'); return; }
+      webRecords = nextRecords;
+      refreshRecords(now);
       const streakNumber = document.getElementById('streakNumber');
       streakNumber.classList.remove('celebrate'); void streakNumber.offsetWidth; streakNumber.classList.add('celebrate');
       checkBtn.closest('.checkin-card').classList.add('success');
-      updateNutrition();
-      renderContributionGrid(new Date());
-      toast(noDrink ? '打卡成功，今天没有喝含糖饮料！' : checkedDrink === 'both' ? '打卡成功，今天少喝了饮料和奶茶！' : `打卡成功，今天少喝一份${nutrition[checkedDrink].label}！`);
+      toast(type === 'none' ? '打卡成功，今天没有喝含糖饮料！' : type === 'both' ? '打卡成功，今天少喝了饮料和奶茶！' : '打卡成功，今天少喝一份' + nutrition[type].label + '！');
     });
-    document.getElementById('inviteBtn').addEventListener('click', () => toast('邀请卡片已准备好，分享给好友吧'));
+    document.getElementById('toggleRecords').addEventListener('click', () => {
+      showAllRecords = !showAllRecords;
+      renderRecordList();
+    });
+    document.getElementById('clearRecords').addEventListener('click', () => {
+      if (!webRecords.length) { toast('还没有打卡记录'); return; }
+      if (!window.confirm('清空当前浏览器的全部打卡记录？此操作无法撤销，个人设置会保留。')) return;
+      try { localStorage.setItem(WEB_RECORDS_KEY, '[]'); }
+      catch (_) { toast('清空失败，请重试'); return; }
+      webRecords = [];
+      showAllRecords = false;
+      refreshRecords();
+      toast('打卡记录已清空');
+    });
+    document.getElementById('inviteBtn').addEventListener('click', () => toast('好友邀请与同步尚未开通'));
     document.getElementById('moreScience').addEventListener('click', () => { scienceOffset = (scienceOffset + 1) % scienceFacts.length; renderDailyContent(true); toast('已换一条健康知识'); });
-    document.getElementById('notifyBtn').addEventListener('click', () => toast('今天有 1 条好友动态'));
+    document.getElementById('notifyBtn').addEventListener('click', () => toast('暂时没有新消息'));
     document.getElementById('profileQuick').addEventListener('click', () => document.querySelector('[data-tab="profile"]').click());
     document.getElementById('editGoal').addEventListener('click', () => openSetting('goal'));
     renderSettings(); renderDailyContent();
