@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+  <meta name="theme-color" content="#ECFFF3" />
+  <title>今天你喝奶茶了吗 · 戒糖健康记录</title>
+  <style>
+    :root {
+      --ink: #064C3F;
+      --muted: #52766E;
+      --line: #BDEDD7;
+      --paper: #ECFFF3;
+      --card: #F8FFFB;
+      --coral: #22D9AE;
+      --coral-deep: #05A882;
+      --coral-soft: #D8FAE5;
+      --mint: #F8FFFB;
+      --mint-deep: #05A882;
+      --yellow: #76ED90;
+      --shadow: 0 16px 35px rgba(5, 168, 130, .10);
+      --ease-out: cubic-bezier(.23,1,.32,1);
+      --ease-in-out: cubic-bezier(.77,0,.175,1);
+      --ease-drawer: cubic-bezier(.32,.72,0,1);
+    }
+    * { box-sizing: border-box; }
+    html {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+      overscroll-behavior: none;
+    }
+    body {
+      margin: 0;
+      background: #D8F5E7;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-optical-sizing: auto;
+      font-variant-numeric: tabular-nums;
+    }
+    button { font: inherit; color: inherit; touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    input, select { font: inherit; font-size: 16px; color: var(--ink); }
+    .app-shell {
+      width: min(100%, 430px);
+      min-height: 100svh;
+      margin: 0 auto;
+      background: var(--paper);
+      position: relative;
+      overflow: hidden;
+    }
+    .statusbar { height: env(safe-area-inset-top, 0px); background: var(--paper); }
+    .app-content { padding: 20px 20px 112px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+    .eyebrow { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; letter-spacing: .02em; }
+    .eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 4px var(--coral-soft); }
+    h1, h2, p { margin: 0; }
+    h1 { margin-top: 5px; font-size: 25px; line-height: 1.18; letter-spacing: -.03em; }
+    .top-actions { display: flex; gap: 9px; }
+    .icon-btn { width: 38px; height: 38px; border: 1px solid var(--line); background: rgba(255,255,255,.72); border-radius: 13px; display: grid; place-items: center; cursor: pointer; transition: transform 140ms var(--ease-out), background-color 160ms ease; }
+    .icon-btn svg { width: 18px; height: 18px; stroke: var(--ink); }
+
+    .hero-card { background: var(--ink); color: #fff; border-radius: 24px; padding: 22px; position: relative; overflow: hidden; box-shadow: var(--shadow); }
+    .hero-card:after { content: ''; position: absolute; width: 175px; height: 175px; border-radius: 50%; border: 1px solid rgba(255,255,255,.14); right: -66px; top: -74px; box-shadow: 0 0 0 18px rgba(255,255,255,.035), 0 0 0 36px rgba(255,255,255,.025); }
+    .hero-row { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 1; }
+    .hero-kicker { font-size: 12px; color: #E0FFF2; margin-bottom: 8px; }
+    .hero-number { font-size: 42px; line-height: 1; font-weight: 800; letter-spacing: -.06em; }
+    .hero-number.celebrate { animation:number-pop 260ms var(--ease-out); }
+    .hero-number span { font-size: 15px; letter-spacing: 0; font-weight: 500; margin-left: 5px; color: #E0FFF2; }
+    .hero-note { margin-top: 8px; color: #E0FFF2; font-size: 12px; }
+    .ring { width:84px; height:84px; aspect-ratio:1; flex:0 0 84px; border-radius:50%; display:grid; place-items:center; background:conic-gradient(var(--coral) 0 71%, rgba(255,255,255,.14) 71% 100%); position:relative; }
+    .ring:before { content: ''; position: absolute; inset: 8px; border-radius: 50%; background: var(--ink); }
+    .ring strong, .ring small { position: relative; z-index: 1; display: block; text-align: center; }
+    .ring strong { font-size: 19px; }
+    .ring small { color: #E0FFF2; font-size: 9px; margin-top: 1px; }
+    .hero-footer { display: flex; align-items: center; gap: 8px; margin-top: 22px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.12); position: relative; z-index: 1; }
+    .mini-avatars { display: flex; padding-left: 5px; }
+    .avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; font-size: 10px; font-weight: 800; margin-left: -5px; }
+    .avatar.me { background: #C5F9D1; color: #05A882; }
+    .avatar.lan { background: #C7F6E8; color: #064C3F; }
+    .avatar.jie { background: #E3FBCB; color: #357459; }
+    .hero-footer p { font-size: 11px; color: #E0FFF2; }
+    .hero-footer strong { color: #fff; font-weight: 600; }
+
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin: 25px 0 12px; }
+    .section-head h2 { font-size: 17px; letter-spacing: -.02em; }
+    .section-head button { border: 0; background: transparent; color: var(--coral-deep); font-size: 12px; cursor: pointer; padding: 4px 0; }
+
+    .checkin-card { background: var(--card); border: 1px solid var(--line); border-radius: 19px; padding: 15px; display: flex; align-items: center; gap: 13px; }
+    .check-icon { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: var(--coral-soft); flex: none; }
+    .check-icon svg { width: 21px; height: 21px; stroke: var(--coral); }
+    .check-copy { flex: 1; min-width: 0; }
+    .check-copy strong { display: block; font-size: 14px; margin-bottom: 3px; }
+    .check-copy span { display: block; font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .check-button { border: 0; background: var(--coral); color: #fff; border-radius: 12px; padding: 10px 12px; font-size: 12px; font-weight: 700; cursor: pointer; min-width: 70px; transition: background .2s, transform .2s; }
+    .check-button.done { background: var(--mint-deep); }
+    .checkin-card.success .check-icon { animation:success-pop 280ms var(--ease-out); }
+
+    .pk-card { background: var(--coral-soft); border: 1px solid #BDEDD7; border-radius: 20px; padding: 17px; }
+    .health-card { display:flex; align-items:flex-start; gap:14px; padding:17px; border-radius:21px; background:linear-gradient(145deg,rgba(118,237,144,.42),rgba(34,217,174,.18)); border:1px solid rgba(255,255,255,.86); box-shadow:inset 0 1px 0 rgba(255,255,255,.88),0 12px 28px rgba(5,168,130,.11); }
+    .health-icon { width:44px; height:44px; flex:none; display:grid; place-items:center; border-radius:15px; background:rgba(255,255,255,.7); color:#05A882; font-size:22px; box-shadow:inset 0 1px 0 #fff; }
+    .health-copy { min-width:0; flex:1; }
+    .health-top { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .health-top strong { font-size:14px; }
+    .science-tag { flex:none; padding:4px 7px; border-radius:99px; background:#05A882; color:#fff; font-size:9px; font-weight:700; }
+    .science-fact { margin-top:7px; color:#064C3F; font-size:12px; line-height:1.65; }
+    .science-source { display:block; margin-top:6px; color:#52766E; font-size:9px; line-height:1.5; }
+    .pk-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .pk-title { font-size: 15px; font-weight: 800; }
+    .pk-sub { color: #52766E; font-size: 11px; margin-top: 4px; }
+    .pk-badge { background: #F8FFFB; border: 1px solid #BDEDD7; color: var(--coral-deep); border-radius: 8px; padding: 5px 8px; font-family: 'DM Mono', monospace; font-size: 10px; }
+    .versus { display: grid; grid-template-columns: 1fr 42px 1fr; align-items: center; gap: 8px; margin: 18px 0 15px; }
+    .player { display: flex; align-items: center; gap: 8px; }
+    .player.right { flex-direction: row-reverse; text-align: right; }
+    .big-avatar { width: 38px; height: 38px; border-radius: 13px; display: grid; place-items: center; font-size: 12px; font-weight: 800; }
+    .big-avatar.mine { background: #C5F9D1; color: #05A882; }
+    .big-avatar.opponent { background: #C7F6E8; color: #064C3F; }
+    .player strong { display: block; font-size: 12px; }
+    .player span { display: block; color: #52766E; font-size: 10px; margin-top: 2px; }
+    .vs { width: 35px; height: 35px; border-radius: 50%; background: #fff; color: var(--coral-deep); display: grid; place-items: center; font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; margin: auto; }
+    .score-line { height: 8px; background: #BDEDD7; border-radius: 99px; overflow: hidden; display: flex; gap: 2px; }
+    .score-line .mine { width: 62%; background: var(--coral); border-radius: 99px 0 0 99px; }
+    .score-line .opponent { width: 38%; background: var(--mint-deep); border-radius: 0 99px 99px 0; }
+    .score-foot { display: flex; justify-content: space-between; margin-top: 8px; color: #52766E; font-size: 10px; }
+    .score-foot strong { color: var(--ink); }
+    .pk-actions { display: flex; gap: 8px; margin-top: 15px; }
+    .primary-btn, .secondary-btn { flex: 1; border-radius: 11px; padding: 11px 12px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform .2s; }
+    .primary-btn { border: 0; background: var(--ink); color: #fff; }
+    .secondary-btn { border: 1px solid #BDEDD7; background: transparent; color: var(--coral-deep); }
+
+    .leaderboard { background: var(--card); border: 1px solid var(--line); border-radius: 19px; padding: 14px 15px 9px; }
+    .leader-row { display: grid; grid-template-columns: 23px 1fr auto; gap: 10px; align-items: center; padding: 10px 0; border-bottom: 1px solid #D3F2E3; }
+    .leader-row:last-child { border-bottom: 0; }
+    .rank { color: #52766E; font-family: 'DM Mono', monospace; font-size: 11px; text-align: center; }
+    .leader-user { display: flex; align-items: center; gap: 9px; }
+    .leader-user .avatar { border: 0; margin: 0; width: 30px; height: 30px; }
+    .leader-user strong { font-size: 12px; display: block; }
+    .leader-user i { font-style:normal; }
+    .leader-user span { color: var(--muted); font-size: 10px; display: block; margin-top: 2px; }
+    .leader-score { text-align: right; }
+    .leader-score strong { display: block; font-size: 13px; }
+    .leader-score span { color: var(--muted); font-size: 10px; }
+    .you .rank, .you .leader-score strong { color: var(--coral-deep); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display:block; animation:panel-fade 180ms var(--ease-out) both; }
+    .tab-panel.active > * { animation:content-in 240ms var(--ease-out) both; }
+    .tab-panel.active > :nth-child(2) { animation-delay:30ms; }
+    .tab-panel.active > :nth-child(3) { animation-delay:60ms; }
+    .tab-panel.active > :nth-child(4) { animation-delay:90ms; }
+    .tab-panel.active > :nth-child(n+5) { animation-delay:120ms; }
+    @keyframes panel-fade { from { opacity:.72; } to { opacity:1; } }
+    @keyframes content-in { from { opacity:0; transform:translateY(8px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @keyframes number-pop { 0% { transform:scale(.96); opacity:.72; } 70% { transform:scale(1.035); opacity:1; } 100% { transform:scale(1); opacity:1; } }
+    @keyframes success-pop { 0% { transform:scale(.92); } 68% { transform:scale(1.08); } 100% { transform:scale(1); } }
+    .pk-view-title { font-size: 22px; font-weight: 800; letter-spacing: -.03em; }
+    .pk-view-sub { font-size: 12px; color: var(--muted); margin-top: 6px; }
+    .metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 18px; }
+    .metric { background: var(--card); border: 1px solid var(--line); padding: 15px; border-radius: 16px; }
+    .metric span { color: var(--muted); font-size: 11px; }
+    .metric strong { display: block; margin-top: 8px; font-size: 24px; letter-spacing: -.04em; }
+    .metric em { font-style: normal; color: var(--mint-deep); font-size: 11px; margin-left: 4px; }
+    .nutrition-card { margin-top: 14px; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 17px; }
+    .nutrition-head { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .nutrition-kicker { color:var(--muted); font-size:11px; }
+    .nutrition-title { margin-top:4px; font-size:17px; font-weight:800; }
+    .nutrition-count { color:var(--coral); font:500 24px 'DM Mono', monospace; text-align:right; line-height:1; }
+    .nutrition-count small { display:block; margin-top:6px; color:var(--muted); font:400 9px 'Noto Sans SC', sans-serif; }
+    .nutrition-totals { display:grid; grid-template-columns:1fr 1px 1fr; align-items:stretch; margin-top:14px; padding:13px 8px; border-radius:14px; background:var(--ink); color:var(--paper); text-align:center; }
+    .nutrition-number { font:500 23px 'DM Mono', monospace; }
+    .nutrition-number small { font-size:10px; margin-left:3px; }
+    .nutrition-total span { display:block; margin-top:3px; color:#E0FFF2; font-size:9px; }
+    .nutrition-divider { background:rgba(236,255,243,.24); }
+    .drink-breakdown { margin-top:7px; }
+    .drink-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:11px 0; border-bottom:1px solid var(--line); }
+    .drink-row:last-child { border-bottom:0; }
+    .drink-name { font-size:12px; font-weight:700; }
+    .drink-note { margin-top:3px; color:var(--muted); font-size:9px; }
+    .drink-result { color:var(--coral); font:500 12px 'DM Mono', monospace; text-align:right; white-space:nowrap; }
+    .drink-result small { display:block; margin-top:3px; color:var(--muted); font:400 9px 'Noto Sans SC', sans-serif; }
+    .estimate-note { color:var(--muted); font-size:9px; line-height:1.6; }
+    .encouragement { border-top: 1px solid var(--line); margin-top:10px; padding-top: 11px; font-size: 12px; color: var(--coral); line-height: 1.7; }
+    .check-copy span { white-space: normal; line-height: 1.6; }
+    .drink-picker { background:var(--card); border:1px solid var(--line); border-radius:17px; padding:13px; margin-bottom:9px; }
+    .picker-label { font-size:11px; font-weight:700; margin-bottom:9px; }
+    .picker-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .drink-option { border:1px solid var(--line); background:transparent; border-radius:12px; padding:10px; text-align:left; cursor:pointer; transition:transform 160ms cubic-bezier(.23,1,.32,1), border-color 160ms ease, background 160ms ease; }
+    .drink-option:active, .check-button:active, .primary-btn:active, .secondary-btn:active { transform:scale(.97); }
+    .drink-option strong { display:block; font-size:12px; }
+    .drink-option span { display:block; margin-top:3px; color:var(--muted); font-size:9px; }
+    .drink-option i { font-style:normal; }
+    .drink-option.selected { border-color:var(--coral); background:var(--coral-soft); color:var(--coral-deep); }
+    .chart-card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; margin-top: 10px; padding: 16px; }
+    .chart-head { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+    .chart-head strong { display:block; color:#064C3F; font-size:14px; line-height:1.25; }
+    .chart-subtitle { display:block; margin-top:4px; color:#52766E; font-size:10px; }
+    .heatmap-count { display:flex; flex-direction:column; align-items:flex-end; justify-content:center; color:#52766E; font-size:10px; line-height:1.3; }
+    .heatmap-count strong { color:#067D65; font-size:19px; font-weight:750; line-height:1.05; }
+    .heatmap-plot { margin-top:15px; padding:14px 9px; border-radius:13px; background:#EDF7F0; }
+    .heatmap-scroll { overflow-x:auto; overscroll-behavior-x:contain; scrollbar-width:none; }
+    .heatmap-scroll::-webkit-scrollbar { display:none; }
+    .heatmap-canvas { width:100%; }
+    .heatmap-months { box-sizing:border-box; width:100%; display:grid; grid-template-columns:repeat(18,minmax(0,1fr)); gap:3px; padding-left:20px; margin-bottom:9px; color:#52766E; font-size:9px; font-weight:600; line-height:12px; }
+    .heatmap-months span { white-space:nowrap; }
+    .heatmap-body { width:100%; display:flex; align-items:stretch; gap:6px; }
+    .weekday-labels { width:14px; flex:none; display:flex; flex-direction:column; color:#52766E; font-size:8px; line-height:1; text-align:center; }
+    .weekday-labels span { flex:1; display:flex; align-items:center; justify-content:center; }
+    .contribution-grid { min-width:0; flex:1; display:grid; grid-template-columns:repeat(18,minmax(0,1fr)); grid-template-rows:repeat(7,auto); grid-auto-flow:column; gap:3px; }
+    .contribution-cell { box-sizing:border-box; width:100%; aspect-ratio:1; border:1px solid rgba(6,76,63,.08); border-radius:3px; background:#E4F1E9; }
+    .contribution-cell.cola, .legend-cell.cola { background:#76ED90; border-color:#76ED90; }
+    .contribution-cell.milk-tea, .legend-cell.milk-tea { background:#05A882; border-color:#05A882; }
+    .contribution-cell.both, .legend-cell.both { background:#22D9AE; border-color:#22D9AE; }
+    .contribution-cell.none, .legend-cell.none { background:#9FC5AF; border-color:#9FC5AF; }
+    .contribution-cell.missed, .legend-cell.missed { background:#FFFFFF; border-color:#D6E7DC; }
+    .contribution-cell.pending { background:#FFFFFF; border-color:#9DCDB4; }
+    .contribution-cell.future { background:transparent; border-color:transparent; opacity:1; }
+    .contribution-cell.today { box-shadow:0 0 0 1px #EDF7F0,0 0 0 2px rgba(5,168,130,.6); }
+    .heatmap-footer { margin-top:13px; padding-top:10px; border-top:1px solid #E1F0E6; color:#52766E; font-size:10px; }
+    .heatmap-legend { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px 6px; margin-top:11px; }
+    .legend-item { display:flex; align-items:center; gap:5px; white-space:nowrap; }
+    .legend-cell { box-sizing:border-box; width:10px; height:10px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(6,76,63,.08); border-radius:3px; color:#6F9985; font-size:8px; font-weight:700; line-height:1; }
+    .chart { height: 138px; display: flex; align-items: end; gap: 10px; padding: 16px 4px 0; }
+    .bar-col { flex: 1; display: flex; flex-direction: column; align-items:center; gap: 6px; }
+    .bar { width: 100%; max-width: 24px; height: calc(var(--h) * 1%); min-height: 12px; background: #C7F6E8; border-radius: 7px 7px 3px 3px; }
+    .bar.today { background: var(--coral); }
+    .bar-col label { color: var(--muted); font-family: 'DM Mono'; font-size: 9px; }
+    .record-row { display:flex; justify-content:space-between; padding: 13px 0; border-bottom:1px solid #D3F2E3; }
+    .record-row:last-child { border-bottom:0; }
+    .record-row strong { font-size:12px; }
+    .record-row span { color:var(--muted); font-size:10px; display:block; margin-top:3px; }
+    .record-state { color: var(--mint-deep); font-size:11px; font-weight:700; }
+    .profile-head { display:flex; align-items:center; gap:14px; margin: 12px 0 24px; }
+    .profile-head.editable { width:100%; border:0; padding:0; background:transparent; text-align:left; cursor:pointer; }
+    .profile-avatar { width:62px; height:62px; border-radius:20px; background:#C5F9D1; color:#05A882; display:grid; place-items:center; font-weight:800; font-size:20px; }
+    .profile-head strong { display:block; font-size:19px; }
+    .profile-head span { display:block; margin-top:5px; color:var(--muted); font-size:11px; }
+    .setting-row { width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--card); border:1px solid var(--line); padding:15px; border-radius:15px; margin-bottom:9px; font-size:13px; text-align:left; }
+    .setting-row.editable { cursor:pointer; transition:transform 120ms cubic-bezier(.23,1,.32,1), background 160ms ease; }
+    .setting-row.editable:active, .profile-head.editable:active { transform:scale(.98); }
+    .setting-trailing { min-width:0; display:flex; align-items:center; justify-content:flex-end; gap:8px; }
+    .setting-row span { color:var(--muted); font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .setting-chevron { color:var(--coral-deep); font-size:20px; line-height:1; }
+
+    .bottom-nav { position: fixed; z-index: 10; bottom: 0; left: 50%; transform: translateX(-50%); width: min(100%, 430px); padding: 9px 18px calc(9px + env(safe-area-inset-bottom, 0px)); background: rgba(248,255,251,.96); backdrop-filter: blur(16px); border-top: 1px solid rgba(189,237,215,.9); display: grid; grid-template-columns: repeat(4, 1fr); }
+    .nav-item { border:0; background:transparent; display:flex; align-items:center; flex-direction:column; gap:4px; color:#52766E; font-size:10px; cursor:pointer; padding:4px 0; transition:transform 120ms var(--ease-out), color 160ms ease, background-color 160ms ease; }
+    .nav-item:active { transform:scale(.94); }
+    .nav-item svg { width:19px; height:19px; stroke: currentColor; }
+    .nav-item.active { color: var(--coral-deep); font-weight:700; }
+    .nav-item.active svg { fill: rgba(5,168,130,.12); }
+
+    .modal-backdrop { position: fixed; z-index: 30; inset: 0; background: rgba(6,76,63,.35); display:none; align-items:flex-end; justify-content:center; }
+    .modal-backdrop.open { display:flex; }
+    .modal { width:min(100%,430px); background:var(--paper); border-radius:26px 26px 0 0; padding:18px 20px calc(24px + env(safe-area-inset-bottom,0px)); animation:sheet 240ms var(--ease-drawer); }
+    @keyframes sheet { from { transform:translateY(10%); opacity:.5; } to { transform:translateY(0); opacity:1; } }
+    .modal-handle { width:34px; height:4px; background:#BDEDD7; border-radius:3px; margin:0 auto 18px; }
+    .modal h2 { font-size:20px; }
+    .modal p { color:var(--muted); font-size:12px; margin-top:6px; }
+    .modal-titlebar { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+    .modal-close { width:34px; height:34px; border:1px solid rgba(255,255,255,.8); border-radius:50%; background:rgba(255,255,255,.62); color:var(--muted); font-size:22px; line-height:1; cursor:pointer; }
+    .setting-form { margin-top:18px; }
+    .setting-fields { display:none; }
+    .setting-fields.active { display:block; }
+    .field { display:block; margin-bottom:13px; }
+    .field > span { display:block; margin-bottom:7px; color:var(--muted); font-size:11px; font-weight:600; }
+    .field input, .field select { width:100%; min-height:48px; border:1px solid rgba(255,255,255,.86); border-radius:14px; padding:12px 13px; outline:none; background:rgba(248,255,251,.8); box-shadow:inset 0 1px 0 #fff,0 8px 20px rgba(5,168,130,.08); }
+    .field input:focus, .field select:focus { border-color:rgba(5,168,130,.55); box-shadow:0 0 0 3px rgba(118,237,144,.2); }
+    .field-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .setting-form .primary-btn { margin-top:5px; }
+    .challenge-options { display:grid; grid-template-columns: repeat(3,1fr); gap:9px; margin:18px 0; }
+    .challenge-option { border:1px solid var(--line); background:var(--card); border-radius:13px; padding:12px 5px; text-align:center; cursor:pointer; }
+    .challenge-option strong { display:block; font-size:17px; }
+    .challenge-option span { color:var(--muted); font-size:10px; }
+    .challenge-option.selected { border-color:var(--coral); background:var(--coral-soft); color:var(--coral-deep); }
+    .modal .primary-btn { width:100%; padding:13px; }
+    .toast { position:fixed; z-index:50; top:calc(20px + env(safe-area-inset-top,0px)); left:50%; transform:translate(-50%,-20px); opacity:0; pointer-events:none; background:var(--ink); color:#fff; padding:10px 14px; border-radius:11px; font-size:12px; transition:opacity 180ms var(--ease-out), transform 180ms var(--ease-out); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+    @media (min-width: 700px) { .app-shell { margin-top:24px; min-height: calc(100svh - 48px); border-radius:28px; box-shadow:0 18px 60px rgba(6,76,63,.15); } .bottom-nav { bottom:24px; border-radius:0 0 28px 28px; } }
+    /* Apple-inspired materials: bright rim, translucent body and soft depth. */
+    button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    .app-shell { background: linear-gradient(180deg, #F4FFF7, #ECFFF3 48%, #D7F8E6); }
+    h1 { font-size: 27px; font-weight: 700; letter-spacing: -.035em; }
+    .hero-card { background: linear-gradient(145deg,#22D9AE,#05A882 56%,#03866A); border: 1px solid rgba(255,255,255,.28); border-radius: 26px; box-shadow: inset 0 1px 0 rgba(255,255,255,.24), 0 18px 42px rgba(5,168,130,.22); }
+    .hero-number { font-weight: 700; }
+    .nutrition-card, .checkin-card, .leaderboard, .metric, .setting-row, .chart-card {
+      background: rgba(248,255,251,.8); border: 1px solid rgba(255,255,255,.72); border-radius: 21px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.82), 0 10px 28px rgba(6,76,63,.07);
+    }
+    .drink-picker { background: rgba(216,250,229,.8); border-color: rgba(255,255,255,.78); border-radius: 21px; box-shadow: inset 0 1px 0 rgba(255,255,255,.86), 0 10px 24px rgba(5,168,130,.08); }
+    .picker-options { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+    .drink-option, .icon-btn, .secondary-btn, .challenge-option {
+      background: linear-gradient(145deg,rgba(255,255,255,.78),rgba(118,237,144,.16));
+      border: 1px solid rgba(255,255,255,.84); border-radius: 14px;
+      -webkit-backdrop-filter: blur(16px) saturate(175%); backdrop-filter: blur(16px) saturate(175%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.94), inset 0 -1px 0 rgba(5,168,130,.06), 0 7px 16px rgba(5,168,130,.09);
+      transition: transform 120ms cubic-bezier(.23,1,.32,1), background 160ms ease;
+    }
+    .drink-option { min-width: 0; padding: 12px 8px; }
+    .drink-option span { font-size: 9px; line-height: 1.5; color: #52766E; }
+    .drink-option.selected, .challenge-option.selected { border-color: rgba(5,168,130,.48); background: linear-gradient(145deg,rgba(255,255,255,.82),rgba(118,237,144,.38)); color: #05A882; box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 8px 18px rgba(5,168,130,.14); }
+    .primary-btn, .check-button {
+      background: linear-gradient(145deg,rgba(34,217,174,.98),rgba(5,168,130,.94)); color: #F8FFFB;
+      border: 1px solid rgba(255,255,255,.38); border-radius: 14px;
+      -webkit-backdrop-filter: blur(16px) saturate(180%); backdrop-filter: blur(16px) saturate(180%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.38), inset 0 -1px 0 rgba(0,88,67,.16), 0 8px 18px rgba(5,168,130,.22);
+      transition: transform 120ms cubic-bezier(.23,1,.32,1);
+    }
+    .check-button.done, .check-button:disabled { cursor: default; color: #52766E; background: linear-gradient(145deg,rgba(255,255,255,.7),rgba(189,237,215,.6)); border-color: rgba(255,255,255,.74); box-shadow: inset 0 1px 0 rgba(255,255,255,.84), 0 6px 14px rgba(6,76,63,.06); transform: none; }
+    .drink-option:disabled { cursor: default; opacity: .65; transform: none; }
+    button:focus-visible { outline: 2px solid #05A882; outline-offset: 3px; }
+    .drink-option:not(:disabled):active, .icon-btn:active, .primary-btn:active, .secondary-btn:active, .check-button:not(:disabled):active { transform: scale(.97); }
+    .nutrition-count, .nutrition-count small, .nutrition-number, .drink-result, .drink-result small, .pk-badge, .vs, .rank, .bar-col label { font-family: -apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC","Helvetica Neue","Segoe UI",sans-serif; }
+    .nutrition-count, .nutrition-number { font-weight: 700; letter-spacing: -.035em; }
+    .nutrition-total .nutrition-number span { display: inline; color: inherit; font-size: inherit; margin: 0; }
+    .metric strong span { color: inherit; font-size: inherit; }
+    .bottom-nav { bottom: 10px; width: min(calc(100% - 20px),410px); border: 1px solid rgba(255,255,255,.78); border-radius: 21px; background: rgba(248,255,251,.76); -webkit-backdrop-filter: blur(26px) saturate(180%); backdrop-filter: blur(26px) saturate(180%); box-shadow: inset 0 1px 0 rgba(255,255,255,.9),0 14px 34px rgba(5,168,130,.16); }
+    .nav-item.active { border-radius: 12px; background: rgba(118,237,144,.2); }
+    .modal { background: rgba(236,255,243,.92); -webkit-backdrop-filter: blur(28px); backdrop-filter: blur(28px); border: 1px solid rgba(255,255,255,.72); box-shadow: inset 0 1px 0 rgba(255,255,255,.86),0 -16px 42px rgba(6,76,63,.16); }
+    .toast { transition: opacity 180ms ease-out, transform 180ms ease-out; }
+    @media (min-width:700px) { .bottom-nav { bottom:34px; border-radius:21px; } }
+    @media (hover:hover) and (pointer:fine) {
+      .icon-btn:hover { transform: translateY(-2px); background: #fff; }
+      .check-button:not(:disabled):hover { background: var(--coral-deep); transform: translateY(-1px); }
+      .primary-btn:hover, .secondary-btn:hover { transform: translateY(-1px); }
+      .contribution-cell:hover { outline:2px solid rgba(5,168,130,.28); outline-offset:1px; }
+    }
+    @media (hover:none) { .icon-btn:hover,.primary-btn:hover,.secondary-btn:hover,.check-button:hover { transform:none; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } .tab-panel.active { animation:panel-fade 160ms ease both; } .tab-panel.active > *, .hero-number.celebrate, .checkin-card.success .check-icon, .modal { animation:none !important; transform:none !important; } .drink-option,.icon-btn,.primary-btn,.secondary-btn,.check-button,.nav-item,.toast { transition-duration:80ms; } }
+    @media (prefers-reduced-transparency:reduce) { .drink-option,.icon-btn,.secondary-btn,.challenge-option,.bottom-nav,.modal { background:#F8FFFB; -webkit-backdrop-filter:none; backdrop-filter:none; } .primary-btn,.check-button { background:#05A882; -webkit-backdrop-filter:none; backdrop-filter:none; } .check-button:disabled { background:#BDEDD7; } }
+    @media (prefers-contrast:more) { .drink-option,.icon-btn,.secondary-btn,.bottom-nav { border-color:#064C3F; background:#F8FFFB; } }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <div class="statusbar"></div>
+    <div class="app-content">
+      <section id="todayPanel" class="tab-panel active">
+        <header class="topbar">
+          <div><div class="eyebrow"><span class="eyebrow-dot"></span><span id="webDateLabel">今天</span></div><h1>早上好，<span id="homeName">林林</span></h1></div>
+          <div class="top-actions"><button class="icon-btn" aria-label="消息" id="notifyBtn"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><button class="icon-btn" aria-label="个人资料" id="profileQuick"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.3 3-5 7-5s6.2 1.7 7 5"/></svg></button></div>
+        </header>
+        <article class="hero-card">
+          <div class="hero-row"><div><div class="hero-kicker">我的连续戒糖</div><div class="hero-number" id="streakNumber">12<span>天</span></div><p class="hero-note" id="heroEncouragement">每一次少糖的选择，都在照顾未来的自己。</p></div><div class="ring"><div><strong>71%</strong><small>本周完成</small></div></div></div>
+          <div class="hero-footer"><div class="mini-avatars"><div class="avatar me" id="miniMe">林</div><div class="avatar lan">澜</div><div class="avatar jie">洁</div></div><p>你和 <strong>2 位好友</strong> 正在一起坚持</p></div>
+        </article>
+        <article class="nutrition-card">
+          <div class="nutrition-head"><div><div class="nutrition-kicker">累计减少摄入</div><div class="nutrition-title">身体少一点负担</div></div><div class="nutrition-count"><span id="totalCount">42</span><small>次坚持</small></div></div>
+          <div class="nutrition-totals"><div class="nutrition-total"><div class="nutrition-number"><span id="totalSugar">2,274</span><small>g</small></div><span>糖分</span></div><div class="nutrition-divider"></div><div class="nutrition-total"><div class="nutrition-number"><span id="totalCalories">11,070</span><small>kcal</small></div><span>热量</span></div></div>
+          <div class="drink-breakdown"><div class="drink-row"><div><div class="drink-name">饮料</div><div class="drink-note">少喝 <span id="colaCount">18</span> 瓶 · 每瓶约 <span id="drinkSugarRef">53</span>g 糖 / <span id="drinkCaloriesRef">215</span>kcal</div></div><div class="drink-result"><span id="colaSugar">954</span>g<small><span id="colaCalories">3,870</span>kcal</small></div></div><div class="drink-row"><div><div class="drink-name">奶茶</div><div class="drink-note">少喝 <span id="milkTeaCount">24</span> 杯 · 每杯约 <span id="milkTeaSugarRef">55</span>g 糖 / <span id="milkTeaCaloriesRef">300</span>kcal</div></div><div class="drink-result"><span id="milkTeaSugar">1,320</span>g<small><span id="milkTeaCalories">7,200</span>kcal</small></div></div></div>
+          <div class="estimate-note">数据为每份估算值，品牌、容量和配方不同会有差异。</div><p class="encouragement">少一点甜，多一点轻盈。你的每次坚持，都值得被看见。</p>
+        </article>
+        <div class="section-head"><h2>今天的状态</h2><button id="editGoal">调整目标</button></div>
+        <article class="drink-picker" id="drinkPicker"><div class="picker-label">今天少喝了什么？</div><div class="picker-options"><button class="drink-option" data-drink="cola"><strong>饮料</strong><span><i id="drinkOptionSugar">53</i>g 糖 · <i id="drinkOptionCalories">215</i>kcal</span></button><button class="drink-option selected" data-drink="milkTea"><strong>奶茶</strong><span><i id="milkTeaOptionSugar">55</i>g 糖 · <i id="milkTeaOptionCalories">300</i>kcal</span></button><button class="drink-option" data-drink="both"><strong>少喝</strong><span><i id="bothOptionSugar">108</i>g 糖 · <i id="bothOptionCalories">515</i>kcal</span></button><button class="drink-option" data-drink="none"><strong>没有喝</strong><span>0g 糖 · 0kcal</span></button></div></article>
+        <article class="checkin-card"><div class="check-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 3v18M5 8c2.5-2 4.5-2 7 0 2.5 2 4.5 2 7 0"/></svg></div><div class="check-copy"><strong id="checkTitle">今天还没打卡</strong><span id="checkSub">可选饮料、奶茶、少喝或没有喝</span></div><button class="check-button" id="checkBtn">立即打卡</button></article>
+        <div class="section-head"><h2>健康小科普</h2><button id="moreScience">换一条</button></div>
+        <article class="health-card" id="healthCard"><div class="health-icon">✦</div><div class="health-copy"><div class="health-top"><strong id="scienceTitle">含糖饮料不是日常补水</strong><span class="science-tag">每日更新</span></div><p class="science-fact" id="scienceFact">含糖饮料容易带来额外糖分和热量。口渴时优先选择白水或无糖茶，通常是更轻松、可持续的选择。</p><small class="science-source" id="scienceSource">用于日常健康提醒，不替代医疗建议。</small></div></article>
+      </section>
+
+      <section id="pkPanel" class="tab-panel"><div class="pk-view-title">好友排行</div><div class="pk-view-sub">按连续戒糖天数展示已加入小程序的微信好友。</div><div class="metric-grid"><div class="metric"><span>我的排名</span><strong>02<em>名</em></strong></div><div class="metric"><span>已加入好友</span><strong>06<em>人</em></strong></div></div><div class="section-head"><h2>全部好友</h2><button id="inviteBtn">邀请好友</button></div><article class="leaderboard"><div class="leader-row"><div class="rank">01</div><div class="leader-user"><div class="avatar lan">澜</div><div><strong>小澜</strong><span>连续 14 天 · 今日已完成</span></div></div><div class="leader-score"><strong>14</strong><span>天</span></div></div><div class="leader-row you"><div class="rank">02</div><div class="leader-user"><div class="avatar me" id="rankMeAvatar">林</div><div><strong><i id="rankMeName">林林</i>（你）</strong><span>连续 12 天 · 今日未打卡</span></div></div><div class="leader-score"><strong>12</strong><span>天</span></div></div><div class="leader-row"><div class="rank">03</div><div class="leader-user"><div class="avatar jie">洁</div><div><strong>阿洁</strong><span>连续 8 天 · 今日已完成</span></div></div><div class="leader-score"><strong>08</strong><span>天</span></div></div><div class="leader-row"><div class="rank">04</div><div class="leader-user"><div class="avatar lan">周</div><div><strong>小周</strong><span>连续 6 天 · 今日未打卡</span></div></div><div class="leader-score"><strong>06</strong><span>天</span></div></div><div class="leader-row"><div class="rank">05</div><div class="leader-user"><div class="avatar jie">乔</div><div><strong>乔乔</strong><span>连续 4 天 · 今日已完成</span></div></div><div class="leader-score"><strong>04</strong><span>天</span></div></div><div class="leader-row"><div class="rank">06</div><div class="leader-user"><div class="avatar me">许</div><div><strong>小许</strong><span>连续 2 天 · 今日未打卡</span></div></div><div class="leader-score"><strong>02</strong><span>天</span></div></div></article><p class="estimate-note" style="margin-top:10px">示例排行；正式版需接入云开发，仅展示已授权并加入小程序的好友。</p></section>
+
+      <section id="recordPanel" class="tab-panel"><div class="pk-view-title">我的记录</div><div class="pk-view-sub">每一次选择，都会留下变好的证据。</div><div class="metric-grid"><div class="metric"><span>累计戒糖</span><strong>86<em>天</em></strong></div><div class="metric"><span>减少糖分</span><strong><span id="recordSugar">2,274</span><em>g</em></strong></div></div>
+        <article class="chart-card"><div class="chart-head"><div><strong>打卡热力图</strong><span class="chart-subtitle">近 18 周的坚持</span></div><div class="heatmap-count"><strong id="heatmapCount">42</strong><span>天完成</span></div></div><div class="heatmap-plot"><div class="heatmap-scroll" id="heatmapScroll"><div class="heatmap-canvas"><div class="heatmap-months" id="heatmapMonths" aria-hidden="true"></div><div class="heatmap-body"><div class="weekday-labels"><span>一</span><span></span><span>三</span><span></span><span>五</span><span></span><span>日</span></div><div class="contribution-grid" id="contributionGrid" role="img" aria-label="过去18周打卡热力图"></div></div></div></div></div><div class="heatmap-footer"><span>每格一天 · 描边是今天</span><div class="heatmap-legend"><span class="legend-item"><i class="legend-cell cola"></i>喝了饮料</span><span class="legend-item"><i class="legend-cell milk-tea"></i>喝了奶茶</span><span class="legend-item"><i class="legend-cell both"></i>少喝</span><span class="legend-item"><i class="legend-cell none"></i>没喝</span><span class="legend-item"><i class="legend-cell missed"></i>漏打卡</span></div></div></article>
+        <div class="section-head"><h2>最近 3 次记录</h2><button>查看全部</button></div><article class="leaderboard"><div class="record-row"><div><strong>少喝一杯奶茶</strong><span>今天 · 午后</span></div><div class="record-state">已坚持</div></div><div class="record-row"><div><strong>少喝一瓶饮料</strong><span>昨天 · 午餐</span></div><div class="record-state">已坚持</div></div><div class="record-row"><div><strong>少喝一杯奶茶</strong><span>10月10日 · 下午</span></div><div class="record-state">已坚持</div></div></article></section>
+
+      <section id="profilePanel" class="tab-panel"><div class="pk-view-title">我的</div><button class="profile-head editable" data-setting="name"><div class="profile-avatar" id="profileAvatar">林</div><div><strong id="profileName">林林</strong><span>加入今天你喝奶茶了吗 · 第 86 天 · 点击编辑昵称</span></div></button><button class="setting-row editable" data-setting="goal"><div>我的戒糖目标</div><div class="setting-trailing"><span id="goalValue">每天少喝一份含糖饮料</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="nutrition"><div>营养估算标准</div><div class="setting-trailing"><span id="nutritionValue">饮料 / 奶茶</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="noDrink"><div>“没有喝”的记录</div><div class="setting-trailing"><span id="noDrinkValue">计入连续天数</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="reminder"><div>提醒时间</div><div class="setting-trailing"><span id="reminderValue">每天 20:30</span><b class="setting-chevron">›</b></div></button><button class="setting-row editable" data-setting="visibility"><div>好友可见范围</div><div class="setting-trailing"><span id="visibilityValue">仅好友</span><b class="setting-chevron">›</b></div></button><div class="setting-row"><div>关于今天你喝奶茶了吗</div><div class="setting-trailing"><span>v1.2.0</span></div></div></section>
+    </div>
+    <nav class="bottom-nav"><button class="nav-item active" data-tab="today"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3.5 10.5 12 3l8.5 7.5V20a1 1 0 0 1-1 1h-5v-6h-5v6h-5a1 1 0 0 1-1-1z"/></svg><span>今日</span></button><button class="nav-item" data-tab="pk"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M8 8h8M8 12h8M8 16h5M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z"/></svg><span>好友排行</span></button><button class="nav-item" data-tab="record"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M4 19V5M4 19h17M8 16v-3M12 16V8M16 16v-6M20 16v-9"/></svg><span>记录</span></button><button class="nav-item" data-tab="profile"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.3 3-5 7-5s6.2 1.7 7 5"/></svg><span>我的</span></button></nav>
+  </main>
+  <div class="modal-backdrop" id="settingsModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <div class="modal-handle"></div>
+      <div class="modal-titlebar"><div><h2 id="settingsTitle">编辑设置</h2><p id="settingsHint">修改后会保存在当前设备。</p></div><button class="modal-close" id="closeSettings" type="button" aria-label="关闭">×</button></div>
+      <form class="setting-form" id="settingsForm">
+        <div class="setting-fields" data-form="name"><label class="field"><span>昵称</span><input id="nameInput" maxlength="12" autocomplete="nickname" placeholder="请输入昵称" /></label></div>
+        <div class="setting-fields" data-form="goal"><label class="field"><span>戒糖目标</span><input id="goalInput" maxlength="30" placeholder="例如：每天少喝一份含糖饮料" /></label></div>
+        <div class="setting-fields" data-form="nutrition"><div class="field-grid"><label class="field"><span>饮料糖分（g）</span><input id="drinkSugarInput" type="number" inputmode="decimal" min="0" max="300" /></label><label class="field"><span>饮料热量（kcal）</span><input id="drinkCaloriesInput" type="number" inputmode="numeric" min="0" max="1500" /></label><label class="field"><span>奶茶糖分（g）</span><input id="milkTeaSugarInput" type="number" inputmode="decimal" min="0" max="300" /></label><label class="field"><span>奶茶热量（kcal）</span><input id="milkTeaCaloriesInput" type="number" inputmode="numeric" min="0" max="1500" /></label></div></div>
+        <div class="setting-fields" data-form="noDrink"><label class="field"><span>“没有喝”如何计入</span><select id="noDrinkInput"><option value="true">计入连续天数</option><option value="false">仅保存记录</option></select></label></div>
+        <div class="setting-fields" data-form="reminder"><label class="field"><span>每天提醒时间</span><input id="reminderInput" type="time" /></label></div>
+        <div class="setting-fields" data-form="visibility"><label class="field"><span>谁可以看到我的记录</span><select id="visibilityInput"><option>仅好友</option><option>仅自己</option><option>所有已加入用户</option></select></label></div>
+        <button class="primary-btn" type="submit">保存修改</button>
+      </form>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+  <script>
+    const panels = { today: 'todayPanel', pk: 'pkPanel', record: 'recordPanel', profile: 'profilePanel' };
+    const toast = (message) => { const el = document.getElementById('toast'); el.textContent = message; el.classList.add('show'); clearTimeout(window.toastTimer); window.toastTimer = setTimeout(() => el.classList.remove('show'), 2200); };
+    document.querySelectorAll('.nav-item').forEach(btn => btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item === btn));
+      Object.entries(panels).forEach(([key, id]) => document.getElementById(id).classList.toggle('active', key === tab));
+      if (tab === 'record') {
+        const scroll = document.getElementById('heatmapScroll');
+        scroll.scrollLeft = scroll.scrollWidth - scroll.clientWidth;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }));
+    const defaultSettings = { name: '林林', goal: '每天少喝一份含糖饮料', drinkSugar: 53, drinkCalories: 215, milkTeaSugar: 55, milkTeaCalories: 300, noDrinkCounts: true, reminder: '20:30', visibility: '仅好友' };
+    const scienceFacts = [
+      { title: '含糖饮料不是日常补水', fact: '含糖饮料容易带来额外糖分和热量。口渴时优先选择白水或无糖茶，通常是更轻松、可持续的选择。' },
+      { title: '看标签时留意“每 100ml”', fact: '营养成分表常按每 100ml 标注。一瓶饮料可能不止 100ml，估算整瓶摄入时记得乘上实际容量。' },
+      { title: '先喝水，再决定要不要甜', fact: '想喝甜饮时先喝一杯水，稍等片刻再决定。把口渴和想喝甜味分开，更容易做出适合自己的选择。' },
+      { title: '甜度可以一点点往下降', fact: '从全糖改为少糖、再到微糖或无糖，比突然追求完美更容易坚持。稳定的小改变通常更有价值。' },
+      { title: '大杯装会放大一次摄入', fact: '配方相同时，容量越大，总糖分和热量通常也越高。选择小杯或不续杯，是简单直接的减量方式。' },
+      { title: '给自己准备固定替代品', fact: '在手边准备白水、气泡水或无糖茶，减少临时寻找饮料的阻力，让健康选择变得更顺手。' },
+      { title: '“无糖”也要看自己的感受', fact: '无糖饮料可以帮助减少糖分，但不必把它当作唯一饮水来源。日常补水仍可优先选择白水。' },
+      { title: '记录的意义不是追求满分', fact: '偶尔喝一杯不代表失败。继续记录、观察触发习惯的场景，比因为一次偏离就放弃更重要。' }
+    ];
+    const encouragements = ['每一次少糖的选择，都在照顾未来的自己。', '今天不必完美，只要比昨天更靠近目标一点。', '你的坚持正在变成一种更轻松的生活方式。', '少一点甜，也是在给身体多一点温柔。', '稳定的小改变，会慢慢带来很大的不同。', '认真记录的每一天，都算数。', '把目标放小一点，坚持就会容易一点。', '今天的清醒选择，值得给自己一个肯定。'];
+    const localDayNumber = date => Math.floor(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 86400000);
+    const localDateKey = date => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const loadSettings = () => { try { return Object.assign({}, defaultSettings, JSON.parse(localStorage.getItem('sugarBattleSettings') || '{}')); } catch (_) { return Object.assign({}, defaultSettings); } };
+    let userSettings = loadSettings();
+    const nutrition = { cola: { label: '饮料', sugar: 53, calories: 215 }, milkTea: { label: '奶茶', sugar: 55, calories: 300 }, both: { label: '饮料和奶茶', sugar: 108, calories: 515 }, none: { label: '没有喝', sugar: 0, calories: 0 } };
+    const counts = { cola: 18, milkTea: 24 };
+    let totalCheckins = 42;
+    let selectedDrink = 'milkTea';
+    let checkedDrink = null;
+    const formatNumber = value => value.toLocaleString('zh-CN');
+    const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+    let scienceOffset = 0;
+    let renderedDay = '';
+    const renderDailyContent = (animate = false) => {
+      const today = new Date();
+      const dateChanged = renderedDay !== localDateKey(today);
+      const day = localDayNumber(today);
+      const science = scienceFacts[(day + scienceOffset) % scienceFacts.length];
+      const weekday = '日一二三四五六'[today.getDay()];
+      setText('webDateLabel', `周${weekday} · ${today.getMonth() + 1}月${today.getDate()}日`);
+      setText('heroEncouragement', encouragements[day % encouragements.length]);
+      setText('scienceTitle', science.title); setText('scienceFact', science.fact);
+      setText('scienceSource', '用于日常健康提醒，不替代医疗建议。');
+      renderedDay = localDateKey(today);
+      if (dateChanged) renderContributionGrid(today);
+      const card = document.getElementById('healthCard');
+      if (animate && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && card.animate) {
+        card.animate([{ opacity:.55, transform:'translateY(4px) scale(.99)' }, { opacity:1, transform:'translateY(0) scale(1)' }], { duration:220, easing:'cubic-bezier(.23,1,.32,1)' });
+      }
+    };
+    const renderContributionGrid = (today = new Date()) => {
+      const grid = document.getElementById('contributionGrid');
+      if (!grid) return;
+      const weeks = 18;
+      const todayKey = localDateKey(today);
+      const start = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12);
+      const mondayOffset = (start.getDay() + 6) % 7;
+      start.setDate(start.getDate() - mondayOffset - (weeks - 1) * 7);
+      const monthMarkers = document.createDocumentFragment();
+      let previousMonth = -1;
+      for (let week = 0; week < weeks; week += 1) {
+        const weekEnd = new Date(start);
+        weekEnd.setDate(start.getDate() + week * 7 + 6);
+        const month = weekEnd.getMonth();
+        const marker = document.createElement('span');
+        marker.textContent = month !== previousMonth ? `${month + 1}月` : '';
+        monthMarkers.appendChild(marker);
+        previousMonth = month;
+      }
+      const fragment = document.createDocumentFragment();
+      let completed = 0;
+      const statusByType = { cola: 'cola', milkTea: 'milk-tea', both: 'both', none: 'none' };
+      for (let index = 0; index < weeks * 7; index += 1) {
+        const date = new Date(start); date.setDate(start.getDate() + index);
+        const serial = localDayNumber(date);
+        const difference = localDayNumber(today) - serial;
+        const future = difference < 0;
+        const score = Math.abs((serial * 9301 + 49297) % 233280) % 100;
+        const simulatedDone = !future && score < (difference < 14 ? 64 : 43);
+        const isToday = localDateKey(date) === todayKey;
+        const recordType = isToday && checkedDrink ? checkedDrink : simulatedDone ? ['cola', 'milkTea', 'both', 'none'][score % 4] : null;
+        const done = Boolean(recordType);
+        const status = future ? 'future' : !recordType ? isToday ? 'pending' : 'missed' : statusByType[recordType] || 'missed';
+        if (done) completed += 1;
+        const cell = document.createElement('span');
+        cell.className = `contribution-cell ${status}${isToday ? ' today' : ''}`;
+        const typeLabel = { cola: '喝了饮料', milkTea: '喝了奶茶', both: '少喝', none: '没喝' };
+        const label = `${date.getMonth() + 1}月${date.getDate()}日 · ${future ? '尚未到来' : status === 'pending' ? '今日待打卡' : !done ? '漏打卡' : typeLabel[recordType]}`;
+        cell.title = label; cell.setAttribute('aria-label', label);
+        fragment.appendChild(cell);
+      }
+      document.getElementById('heatmapMonths').replaceChildren(monthMarkers);
+      grid.replaceChildren(fragment);
+      grid.setAttribute('aria-label', `过去18周打卡热力图，共完成${completed}天`);
+      setText('heatmapCount', String(completed));
+      const scroll = document.getElementById('heatmapScroll');
+      scroll.scrollLeft = scroll.scrollWidth - scroll.clientWidth;
+    };
+    const updateNutrition = () => {
+      nutrition.cola.sugar = Number(userSettings.drinkSugar);
+      nutrition.cola.calories = Number(userSettings.drinkCalories);
+      nutrition.milkTea.sugar = Number(userSettings.milkTeaSugar);
+      nutrition.milkTea.calories = Number(userSettings.milkTeaCalories);
+      nutrition.both.sugar = nutrition.cola.sugar + nutrition.milkTea.sugar;
+      nutrition.both.calories = nutrition.cola.calories + nutrition.milkTea.calories;
+      const colaSugar = counts.cola * nutrition.cola.sugar;
+      const colaCalories = counts.cola * nutrition.cola.calories;
+      const milkTeaSugar = counts.milkTea * nutrition.milkTea.sugar;
+      const milkTeaCalories = counts.milkTea * nutrition.milkTea.calories;
+      document.getElementById('totalCount').textContent = totalCheckins;
+      document.getElementById('totalSugar').textContent = formatNumber(colaSugar + milkTeaSugar);
+      document.getElementById('totalCalories').textContent = formatNumber(colaCalories + milkTeaCalories);
+      document.getElementById('colaCount').textContent = counts.cola;
+      document.getElementById('colaSugar').textContent = formatNumber(colaSugar);
+      document.getElementById('colaCalories').textContent = formatNumber(colaCalories);
+      document.getElementById('milkTeaCount').textContent = counts.milkTea;
+      document.getElementById('milkTeaSugar').textContent = formatNumber(milkTeaSugar);
+      document.getElementById('milkTeaCalories').textContent = formatNumber(milkTeaCalories);
+      document.getElementById('recordSugar').textContent = formatNumber(colaSugar + milkTeaSugar);
+      setText('drinkSugarRef', userSettings.drinkSugar);
+      setText('drinkCaloriesRef', userSettings.drinkCalories);
+      setText('milkTeaSugarRef', userSettings.milkTeaSugar);
+      setText('milkTeaCaloriesRef', userSettings.milkTeaCalories);
+      setText('drinkOptionSugar', userSettings.drinkSugar);
+      setText('drinkOptionCalories', userSettings.drinkCalories);
+      setText('milkTeaOptionSugar', userSettings.milkTeaSugar);
+      setText('milkTeaOptionCalories', userSettings.milkTeaCalories);
+      setText('bothOptionSugar', nutrition.both.sugar);
+      setText('bothOptionCalories', nutrition.both.calories);
+    };
+    const renderSettings = () => {
+      const initial = userSettings.name.trim().charAt(0) || '我';
+      ['profileAvatar', 'miniMe', 'rankMeAvatar'].forEach(id => setText(id, initial));
+      ['homeName', 'profileName', 'rankMeName'].forEach(id => setText(id, userSettings.name));
+      setText('goalValue', userSettings.goal);
+      setText('nutritionValue', `饮料 ${userSettings.drinkSugar}g/${userSettings.drinkCalories} · 奶茶 ${userSettings.milkTeaSugar}g/${userSettings.milkTeaCalories}`);
+      setText('noDrinkValue', userSettings.noDrinkCounts ? '计入连续天数' : '仅保存记录');
+      setText('reminderValue', `每天 ${userSettings.reminder}`);
+      setText('visibilityValue', userSettings.visibility);
+      updateNutrition();
+    };
+    const settingsModal = document.getElementById('settingsModal');
+    const settingsForm = document.getElementById('settingsForm');
+    let activeSetting = '';
+    const settingMeta = {
+      name: ['编辑昵称', '昵称会显示在好友排行中。'], goal: ['编辑戒糖目标', '写下适合自己的日常目标。'],
+      nutrition: ['营养估算标准', '按你常喝的饮料容量填写每份估算值。'], noDrink: ['“没有喝”的记录', '选择是否把这类记录计入连续天数。'],
+      reminder: ['提醒时间', '设置每天希望收到提醒的时间。'], visibility: ['好友可见范围', '控制哪些用户可以看到你的记录。']
+    };
+    const openSetting = (key) => {
+      activeSetting = key;
+      const meta = settingMeta[key];
+      setText('settingsTitle', meta[0]); setText('settingsHint', meta[1]);
+      document.querySelectorAll('.setting-fields').forEach(field => field.classList.toggle('active', field.dataset.form === key));
+      document.getElementById('nameInput').value = userSettings.name;
+      document.getElementById('goalInput').value = userSettings.goal;
+      document.getElementById('drinkSugarInput').value = userSettings.drinkSugar;
+      document.getElementById('drinkCaloriesInput').value = userSettings.drinkCalories;
+      document.getElementById('milkTeaSugarInput').value = userSettings.milkTeaSugar;
+      document.getElementById('milkTeaCaloriesInput').value = userSettings.milkTeaCalories;
+      document.getElementById('noDrinkInput').value = String(userSettings.noDrinkCounts);
+      document.getElementById('reminderInput').value = userSettings.reminder;
+      document.getElementById('visibilityInput').value = userSettings.visibility;
+      settingsModal.classList.add('open'); settingsModal.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(() => document.querySelector(`.setting-fields[data-form="${key}"] input, .setting-fields[data-form="${key}"] select`)?.focus());
+    };
+    const closeSettings = () => { settingsModal.classList.remove('open'); settingsModal.setAttribute('aria-hidden', 'true'); activeSetting = ''; };
+    document.querySelectorAll('[data-setting]').forEach(row => row.addEventListener('click', () => openSetting(row.dataset.setting)));
+    document.getElementById('closeSettings').addEventListener('click', closeSettings);
+    settingsModal.addEventListener('click', event => { if (event.target === settingsModal) closeSettings(); });
+    settingsForm.addEventListener('submit', event => {
+      event.preventDefault();
+      if (activeSetting === 'name') userSettings.name = document.getElementById('nameInput').value.trim() || defaultSettings.name;
+      if (activeSetting === 'goal') userSettings.goal = document.getElementById('goalInput').value.trim() || defaultSettings.goal;
+      if (activeSetting === 'nutrition') {
+        const readNumber = (id, fallback, max) => { const raw = document.getElementById(id).value.trim(); const value = Number(raw); return raw && Number.isFinite(value) && value >= 0 && value <= max ? value : fallback; };
+        userSettings.drinkSugar = readNumber('drinkSugarInput', userSettings.drinkSugar, 300);
+        userSettings.drinkCalories = readNumber('drinkCaloriesInput', userSettings.drinkCalories, 1500);
+        userSettings.milkTeaSugar = readNumber('milkTeaSugarInput', userSettings.milkTeaSugar, 300);
+        userSettings.milkTeaCalories = readNumber('milkTeaCaloriesInput', userSettings.milkTeaCalories, 1500);
+      }
+      if (activeSetting === 'noDrink') userSettings.noDrinkCounts = document.getElementById('noDrinkInput').value === 'true';
+      if (activeSetting === 'reminder') userSettings.reminder = document.getElementById('reminderInput').value || defaultSettings.reminder;
+      if (activeSetting === 'visibility') userSettings.visibility = document.getElementById('visibilityInput').value;
+      try { localStorage.setItem('sugarBattleSettings', JSON.stringify(userSettings)); } catch (_) {}
+      renderSettings(); closeSettings(); toast('设置已保存');
+    });
+    document.querySelectorAll('.drink-option').forEach(option => option.addEventListener('click', () => {
+      if (checkedDrink) return;
+      selectedDrink = option.dataset.drink;
+      document.querySelectorAll('.drink-option').forEach(item => item.classList.toggle('selected', item === option));
+    }));
+    const checkBtn = document.getElementById('checkBtn');
+    checkBtn.addEventListener('click', () => {
+      if (checkedDrink) return;
+      checkedDrink = selectedDrink;
+      if (checkedDrink === 'both') { counts.cola += 1; counts.milkTea += 1; }
+      else if (checkedDrink !== 'none') counts[checkedDrink] += 1;
+      totalCheckins += 1;
+      const noDrink = checkedDrink === 'none';
+      checkBtn.classList.add('done');
+      checkBtn.disabled = true;
+      checkBtn.textContent = '已完成';
+      document.querySelectorAll('.drink-option').forEach(item => { item.disabled = true; });
+      document.getElementById('drinkPicker').style.display = 'none';
+      document.getElementById('checkTitle').textContent = noDrink ? '今天没有喝含糖饮料' : checkedDrink === 'both' ? '今天已少喝饮料和奶茶' : `今天已少喝一份${nutrition[checkedDrink].label}`;
+      document.getElementById('checkSub').textContent = noDrink ? '完成清爽的一天，继续保持' : '少一点糖，也少一点热量负担';
+      if (!noDrink || userSettings.noDrinkCounts) document.getElementById('streakNumber').innerHTML = '13<span>天</span>';
+      const streakNumber = document.getElementById('streakNumber');
+      streakNumber.classList.remove('celebrate'); void streakNumber.offsetWidth; streakNumber.classList.add('celebrate');
+      checkBtn.closest('.checkin-card').classList.add('success');
+      updateNutrition();
+      renderContributionGrid(new Date());
+      toast(noDrink ? '打卡成功，今天没有喝含糖饮料！' : checkedDrink === 'both' ? '打卡成功，今天少喝了饮料和奶茶！' : `打卡成功，今天少喝一份${nutrition[checkedDrink].label}！`);
+    });
+    document.getElementById('inviteBtn').addEventListener('click', () => toast('邀请卡片已准备好，分享给好友吧'));
+    document.getElementById('moreScience').addEventListener('click', () => { scienceOffset = (scienceOffset + 1) % scienceFacts.length; renderDailyContent(true); toast('已换一条健康知识'); });
+    document.getElementById('notifyBtn').addEventListener('click', () => toast('今天有 1 条好友动态'));
+    document.getElementById('profileQuick').addEventListener('click', () => document.querySelector('[data-tab="profile"]').click());
+    document.getElementById('editGoal').addEventListener('click', () => openSetting('goal'));
+    renderSettings(); renderDailyContent();
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && renderedDay !== localDateKey(new Date())) { scienceOffset = 0; renderDailyContent(); } });
+    window.setInterval(() => { if (renderedDay !== localDateKey(new Date())) { scienceOffset = 0; renderDailyContent(); } }, 60000);
+  </script>
+</body>
+</html>
